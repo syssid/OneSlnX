@@ -5,7 +5,7 @@ using Persistance.DIServiceExtension;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
-builder.Services.AddPersistance();
+builder.Services.AddPersistance(builder.Configuration);
 builder.Services.AddInfrastrcture();
 
 var app = builder.Build();
