@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,32 +13,33 @@ namespace Application.Features.Product.Command
     {
         public  int Id { get; set; }
         public required string Name { get; set; }
-        public required string Description { get; set; }
+        public required string Remarks { get; set; }
         public decimal Rate { get; set; }
 
         internal class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, int>
         {
             private readonly IApplicationDbContext _context;
-            public UpdateProductCommandHandler(IApplicationDbContext context)
+            private readonly IMapper _mapper;
+            public UpdateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
             public async Task<int> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
             {
+                var product = await _context.products
+                    .Where(x => x.Id == request.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
 
-              var product = _context.products.Where(x => x.Id == request.Id).FirstOrDefaultAsync();
-               if(product is not null)
-                {
-                    var productUpdate = new Domain.Entities.Product()
-                    {
-                        Name = request.Name,
-                        Description = request.Description,
-                        Rate = request.Rate
-                    };
-                    await _context.SaveChangesAsync();
-                    return product.Id;
-                }
-                return default;
+                if (product is null)
+                    return default;
+
+                // Map into the existing tracked entity
+                _mapper.Map(request, product);
+
+                await _context.SaveChangesAsync();
+
+                return product.Id;
             }
         }
     }

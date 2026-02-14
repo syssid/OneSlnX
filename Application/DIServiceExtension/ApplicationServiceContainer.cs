@@ -10,6 +10,7 @@ namespace Application.DIServiceExtension
     {
         public static void AddApplication(this IServiceCollection services)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(conf => conf.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
         }
     }
