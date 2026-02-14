@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistance.Data;
@@ -21,6 +22,8 @@ namespace Persistance.DIServiceExtension
             service.AddIdentityCore<ApplicationUser>()
                    .AddRoles<ApplicationRole>()
                    .AddEntityFrameworkStores<AppDbContext>();
+
+            service.AddScoped<IApplicationDbContext, AppDbContext>();
         }
     }
 }

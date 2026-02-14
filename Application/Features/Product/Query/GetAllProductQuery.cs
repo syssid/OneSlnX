@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Application.Interfaces;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,21 +11,16 @@ namespace Application.Features.Product.Query
     {
         internal class GetAllProductQueryHandler : IRequestHandler<GetAllProductQuery, IEnumerable<Domain.Entities.Product>>
         {
+            private readonly IApplicationDbContext _context;
+            public GetAllProductQueryHandler(IApplicationDbContext context)
+            {
+                _context = context;
+            }
             public async Task<IEnumerable<Domain.Entities.Product>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
             {
-                var productList = new List<Domain.Entities.Product>();
+               var result = await _context.products.ToListAsync(cancellationToken);
 
-                for (int i = 0; i < 100; i++)
-                {
-                    var prod = new Domain.Entities.Product()
-                    {
-                        Name = "Mobile",
-                        Description = "New Lunch",
-                        Rate = 99.99M + i
-                    };
-                    productList.Add(prod);
-                }
-                return productList;
+                return result;
             }
         }
     }
