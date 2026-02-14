@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Persistance\Persistance.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CustomMiddlewares\" />
-  </ItemGroup>
-
 </Project>
